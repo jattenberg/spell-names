@@ -66,7 +66,7 @@
   [file spell-map]
   (with-open [writer (clojure.java.io/writer file :append true)]
     (doseq [[k v] (map vector (keys spell-map) (vals spell-map))]
-      (.write writer (str "## " k "\n\n"))
+      (.write writer (str "### " k "\n\n"))
       (doseq [item v] (.write writer (str "- " item "\n")))
       (.write writer "\n\n"))
     )
