@@ -42,16 +42,15 @@
   (not (= new-spell original-spell))
 )
 
-(defn filter-spells
-  [original-spell spells-list words]
-  (filter (and #(valid-spell % words) #(non-repetitive-spell % original-spell)) spells-list)
-)
-
 (defn mutate-spell
   "takes a spell and finds all valid permutations"
   [spell words]
-  (let [candidate-spells (mapcat #(test-chars-at-position spell %) (range (count spell)))]
-    (filter-spells (clojure.string/join spell) candidate-spells words)
+  (let [candidate-spells (mapcat #(test-chars-at-position spell %) (range (count spell)))
+        original-spell (clojure.string/join spell)]
+    (apply hash-set 
+           (filter #(non-repetitive-spell original-spell %)
+            (filter #(valid-spell % words) candidate-spells))
+           )
     )
 )
 
@@ -63,20 +62,24 @@
     )
 )
 
+(defn write-map-to-file
+  [file spell-map]
+  (with-open [writer (clojure.java.io/writer file :append true)]
+    (doseq [[k v] (map vector (keys spell-map) (vals spell-map))]
+      (.write writer (str "##" k "\n"))
+      (doseq [item v] (.write writer (str item "\n")))
+      (.write writer "\n\n"))
+    )
+)
+
 (defn -main
   "changes one character of the specified spell list"
   ([spells-file] (-main spells-file "/usr/share/dict/words"))
-  ([spells-file words-file]
-   (def spells (read-spells spells-file))
-   (def words (read-dict words-file))
-   ))
+  ([spells-file words-file] (-main spells-file words-file "./new-spells.md"))
+  ([spells-file words-file out-file]
+   (let [spells (read-spells spells-file)
+         words (read-dict words-file)
+         spell-map (mutate-spells spells words)]
+     (write-map-to-file out-file spell-map)
+     )))
 
-
-(defn foo
-[valid-words word-vec]
-  (filter
-      #(not 
-        (or (contains? valid-words %) (= % (str word-vec)))
-        )
-      [1 2 3 4]
-      ))
