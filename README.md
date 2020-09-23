@@ -1,7 +1,7 @@
 # spell-names
 
 ## Description
-A friend has a dungeon master who institutes a fun mechanic: once each session, he allows the bard to change one letter in a spell's name and image something new.
+A friend has a dungeon master who institutes a fun mechanic: once each session, he allows the bard to change one letter in a spell's name and image something new. I thought this was a fun idea so wanted to play with it!
 
 Comes packaged with a list of spells (`spells.txt`)
 
